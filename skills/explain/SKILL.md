@@ -1,6 +1,8 @@
 ---
 name: explain
 description: Turns a pull request, branch, commit or area of code into a published HTML explainer page covering what happened before, what changes, how it works, a code walkthrough, trade-offs, further reading and analogies, with fully readable mermaid diagrams. Use when the user asks to explain a PR or change ("I don't understand PR 398", "explain this change", "walk me through X") or types /explain.
+license: MIT
+compatibility: Needs git, and the gh CLI for pull requests. The diagram check needs Node 18+ and an installed Chrome, Chromium or Edge.
 ---
 
 # explain
