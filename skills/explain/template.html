@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{Explainer name}}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -339,7 +344,8 @@ footer.colophon { font-size: 0.85rem; color: var(--muted); border-top: 1px solid
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
 html { scroll-behavior: smooth; }
 </style>
-
+</head>
+<body>
 <div class="page">
   <header class="masthead">
     <div class="eyebrow">{{repo}} &middot; <a href="{{pr_url}}">PR #{{n}}</a> &middot; {{area}} &middot; {{kind}}</div>
@@ -541,3 +547,5 @@ code with a <span class="hl">highlighted call</span>
   new MutationObserver(render).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
 })();
 </script>
+</body>
+</html>
