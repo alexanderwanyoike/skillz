@@ -5,7 +5,7 @@ description: Turns a pull request, branch, commit or area of code into a publish
 
 # explain
 
-One Artifact page that teaches a change to the user: a lead developer who did not write it and wants to understand it properly.
+One self-contained HTML page that teaches a change to the reader: a lead developer who did not write it and wants to understand it properly.
 
 ## Inputs
 
@@ -25,10 +25,12 @@ One Artifact page that teaches a change to the user: a lead developer who did no
   - An architecture change gets a mermaid structure diagram plus before and after flows.
   - A timing problem gets a sequence diagram.
   - A behaviour change gets a before/after table.
-- [ ] **3. Build the page.** Call Artifact `action: "quickstart"`, `intent: "other"` once (the tool requires it). Copy [template.html](template.html) to the scratchpad as `<topic>-explained.html` and fill in every `{{...}}` placeholder. Edit content only; keep the template's CSS and renderer script as they are.
+- [ ] **3. Build the page.** Copy [template.html](template.html) to `<topic>-explained.html` in a working folder: your scratchpad or temp directory if the agent has one, otherwise a gitignored folder of the project such as `.notes/`. Fill in every `{{...}}` placeholder, and give the `<title>` a name for the problem (for example "The Double Frontend Build"). Edit content only; keep the template's CSS and renderer script as they are.
 - [ ] **4. Check the diagrams:** run `node scripts/check-diagrams.mjs <page>.html` from this skill's folder (details in [DIAGRAMS.md](DIAGRAMS.md#check-before-publishing-and-after-any-diagram-edit)). Fix every failure and run it again until it prints `PASS`.
-- [ ] **5. Publish** with Artifact: `icon: "code"`, a one-sentence `description`, and a `<title>` that names the problem (for example "The Double Frontend Build"). To update, republish the same path.
-- [ ] **6. Reply** with the link, a summary of the change in 3 to 5 lines, and anything you noticed that is out of scope. Offer follow-up fixes; do not start them.
+- [ ] **5. Publish** with whatever the agent has:
+  - **A page-publishing tool**, such as claude.ai's Artifact tool: publish the file with it. For Artifact, call `action: "quickstart"` with `intent: "other"` first (the tool requires it), then publish with `icon: "code"` and a one-sentence `description`. To update, republish the same path.
+  - **No publishing tool:** the HTML file is the deliverable. Move it wherever the user asked, otherwise leave it in the working folder, and open it in their browser when they work locally (`open` on macOS, `xdg-open` on Linux, `start` on Windows).
+- [ ] **6. Reply** with the link or file path, a summary of the change in 3 to 5 lines, and anything you noticed that is out of scope. Offer follow-up fixes; do not start them.
 
 ## Sections, in order
 
