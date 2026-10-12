@@ -60,4 +60,4 @@ One Artifact page that teaches a change to the user: a lead developer who did no
 
 ## Writing
 
-Follow the user's CLAUDE.md writing rules. For example, never use the em dash; run `grep -c $'\u2014' <file>` before publishing, and it must print 0. Write plain, direct sentences. Explain jargon once and skip filler.
+Follow the writing rules in the project's agent instructions (AGENTS.md, CLAUDE.md, GEMINI.md or similar). Whatever they say, never use the em dash; run `grep -c $'\u2014' <file>` before publishing, and it must print 0. Write plain, direct sentences. Explain jargon once and skip filler.

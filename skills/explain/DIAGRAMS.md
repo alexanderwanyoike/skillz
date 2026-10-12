@@ -1,10 +1,10 @@
 # Diagrams that stay readable
 
-The user's hard rule is that every diagram must be fully readable in light and dark mode, on desktop and on a phone.
+Every diagram must be fully readable in light and dark mode, on desktop and on a phone.
 
-## Never use the platform's mermaid
+## Never use `pre.mermaid`
 
-Artifacts render `<pre class="mermaid">` natively. That renderer scales every diagram down to the column width and uses mermaid's default colours:
+Some hosts, such as claude.ai Artifacts, render `<pre class="mermaid">` natively. That renderer scales every diagram down to the column width and uses mermaid's default colours:
 - A 1,050px sequence diagram in a 600px column shrinks 16px labels to about 9px.
 - The default colours ignore dark mode.
 
