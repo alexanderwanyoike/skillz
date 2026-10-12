@@ -26,7 +26,7 @@ One Artifact page that teaches a change to the user: a lead developer who did no
   - A timing problem gets a sequence diagram.
   - A behaviour change gets a before/after table.
 - [ ] **3. Build the page.** Call Artifact `action: "quickstart"`, `intent: "other"` once (the tool requires it). Copy [template.html](template.html) to the scratchpad as `<topic>-explained.html` and fill in every `{{...}}` placeholder. Edit content only; keep the template's CSS and renderer script as they are.
-- [ ] **4. Check the diagrams** with the steps in DIAGRAMS.md. Fix what fails, then check once more.
+- [ ] **4. Check the diagrams:** run `node scripts/check-diagrams.mjs <page>.html` from this skill's folder (details in [DIAGRAMS.md](DIAGRAMS.md#check-before-publishing-and-after-any-diagram-edit)). Fix every failure and run it again until it prints `PASS`.
 - [ ] **5. Publish** with Artifact: `icon: "code"`, a one-sentence `description`, and a `<title>` that names the problem (for example "The Double Frontend Build"). To update, republish the same path.
 - [ ] **6. Reply** with the link, a summary of the change in 3 to 5 lines, and anything you noticed that is out of scope. Offer follow-up fixes; do not start them.
 
