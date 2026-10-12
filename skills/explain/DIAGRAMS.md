@@ -47,36 +47,17 @@ Every diagram must fit the column at natural size on desktop: **at most 760px wi
 
 ## Check (before publishing, and after any diagram edit)
 
-The browser pane only runs scripts for files inside the session's folders.
+Run the bundled checker on the filled page. It needs Node 18+ and an installed Chrome, Chromium or Edge (set `CHROME_PATH` if it is not on the `PATH`):
 
-1. Copy the page into a gitignored folder of the project, such as `.notes/`.
-2. Open it with `navigate` to `file://<path>`, then `resize_window` to 1140x1000 and wait 3 seconds.
-3. Run:
-
-```js
-({usable: document.querySelector('.diagram').clientWidth - 32,
-  svgs: [...document.querySelectorAll('.mermaid-out svg')].map(s => Math.round(s.getBoundingClientRect().width)),
-  fallbacks: document.querySelectorAll('.mermaid-fallback').length,
-  pageOverflow: document.documentElement.scrollWidth > innerWidth})
+```bash
+node <skill-dir>/scripts/check-diagrams.mjs <page>.html
 ```
 
-The check passes when there are no fallbacks, every svg width is at most `usable`, and `pageOverflow` is false.
+It renders the page headlessly at 1140px and 390px wide and prints `PASS`, or `FAIL` with one line per problem:
 
-4. Check dark mode:
+- a diagram fell back to its source text (a mermaid syntax error)
+- a diagram is wider than the usable column on desktop
+- the page scrolls sideways on desktop or at phone width
+- a diagram's label contrast is under 4.5:1 in light or dark mode
 
-```js
-document.documentElement.setAttribute('data-theme', 'dark');
-await new Promise(r => setTimeout(r, 1500));
-[...document.querySelectorAll('.mermaid-out svg')].map(svg => {
-  const node = svg.querySelector('.node rect, rect.actor');
-  const label = svg.querySelector('.nodeLabel, text.actor tspan');
-  return {node: node && getComputedStyle(node).fill,
-          text: label && (label.classList.contains('nodeLabel') ? getComputedStyle(label).color : getComputedStyle(label).fill)};
-})
-```
-
-The check passes when every text colour is light and every node fill is dark.
-
-5. Clean up: `resize_window` with `preset: "desktop"`, then delete the copy.
-
-Screenshots in the small pane are too scaled down to judge text size, so trust the measurements. The local copy has no viewport meta, so phone-width checks there mean nothing. The published page has one.
+Exit code 0 is a pass, 1 a failure and 2 means the check could not run. Fix every failure and run it again. Screenshots are too scaled down to judge text size, so trust the measurements.
