@@ -1,0 +1,543 @@
+<title>{{Explainer name}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;600&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* Layout: one reading column (about 70ch) with a sticky contents rail beside it on wide screens; the rail stacks above the text on phones */
+:root {
+  --bg: #f4f6fa;
+  --surface: #ffffff;
+  --fg: #182030;
+  --muted: #566073;
+  --line: #d8dde7;
+  --accent: #2946c7;
+  --accent-soft: #e6ebfb;
+  --hot: #9a5800;
+  --hot-soft: #fcefd8;
+  --add: #16703e;
+  --add-soft: #e2f3e8;
+  --del: #ab291e;
+  --del-soft: #fae5e2;
+  --code-bg: #edf0f6;
+  --code-fg: #1f2738;
+  --comment: #6a7387;
+  --node: #e9edf9;
+  --node-border: #7f8bb0;
+  --cluster: #f6f7fb;
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10131a;
+    --surface: #171b24;
+    --fg: #e3e7ef;
+    --muted: #9aa3b6;
+    --line: #2a303d;
+    --accent: #93a8ff;
+    --accent-soft: #1c2442;
+    --hot: #f0b552;
+    --hot-soft: #36290f;
+    --add: #74d49e;
+    --add-soft: #12301f;
+    --del: #ff9389;
+    --del-soft: #3a1714;
+    --code-bg: #1c212d;
+    --code-fg: #dfe4ee;
+    --comment: #8a93a8;
+    --node: #222a40;
+    --node-border: #6c79a3;
+    --cluster: #131720;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10131a;
+  --surface: #171b24;
+  --fg: #e3e7ef;
+  --muted: #9aa3b6;
+  --line: #2a303d;
+  --accent: #93a8ff;
+  --accent-soft: #1c2442;
+  --hot: #f0b552;
+  --hot-soft: #36290f;
+  --add: #74d49e;
+  --add-soft: #12301f;
+  --del: #ff9389;
+  --del-soft: #3a1714;
+  --code-bg: #1c212d;
+  --code-fg: #dfe4ee;
+  --comment: #8a93a8;
+  --node: #222a40;
+  --node-border: #6c79a3;
+  --cluster: #131720;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+}
+a { color: var(--accent); text-underline-offset: 2px; }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+code, pre, kbd { font-family: var(--font-mono); }
+:not(pre) > code {
+  font-size: 0.86em;
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+
+.page {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding-inline: 20px;
+  padding-block: 40px 96px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+}
+@media (min-width: 1000px) {
+  .page { grid-template-columns: 200px minmax(0, 1fr); column-gap: 56px; }
+  .masthead { grid-column: 1 / -1; }
+  .toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); align-self: start; }
+}
+
+/* Masthead */
+.masthead { display: grid; gap: 14px; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.eyebrow a { color: inherit; }
+h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.1rem, 6vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+h1 .accent-word { color: var(--hot); }
+.dek { font-size: 1.2rem; color: var(--muted); margin: 0; max-width: 60ch; text-wrap: pretty; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 0; padding: 0; list-style: none; }
+.meta li {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+.meta .ok { color: var(--add); border-color: color-mix(in srgb, var(--add) 40%, var(--line)); }
+
+/* Contents rail */
+.toc { font-size: 0.92rem; }
+.toc h2 {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.toc a { color: var(--fg); text-decoration: none; }
+.toc a:hover { color: var(--accent); text-decoration: underline; }
+@media (max-width: 999px) {
+  .toc { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 14px 16px; }
+  .toc ol { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+}
+
+/* Article */
+main { min-width: 0; display: grid; gap: 56px; }
+/* Prose keeps a reading measure; diagrams, code and tables use the full column so they never shrink. */
+main > section > :not(figure):not(.code):not(.table-wrap):not(.term), main > footer { max-width: 72ch; }
+section { display: grid; gap: 16px; min-width: 0; scroll-margin-top: 24px; }
+section > * { margin: 0; }
+h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.75rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.2rem;
+  line-height: 1.25;
+  margin-top: 8px;
+  text-wrap: balance;
+}
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+ul.plain, ol.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; }
+
+/* One-minute summary */
+.summary {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px 22px;
+  display: grid;
+  gap: 12px;
+}
+.summary dl { margin: 0; display: grid; gap: 12px; }
+.summary dt { color: var(--muted); }
+.summary dd { margin: 0; }
+@media (min-width: 640px) {
+  .summary dl { grid-template-columns: 7.5rem minmax(0, 1fr); column-gap: 18px; }
+}
+
+/* Analogy panels */
+.analogy {
+  background: var(--accent-soft);
+  border-radius: 10px;
+  padding: 18px 20px;
+  display: grid;
+  gap: 8px;
+}
+.analogy .label { color: var(--accent); }
+.analogy p { margin: 0; }
+
+/* Diagrams */
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
+.diagram {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px;
+  overflow-x: auto;
+}
+.diagram .mermaid-out { width: max-content; min-width: 100%; display: flex; justify-content: center; }
+.diagram .mermaid-out svg { max-width: none !important; height: auto; }
+.diagram pre.mermaid-fallback { margin: 0; font-size: 0.82rem; white-space: pre; color: var(--fg); }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+.legend-hot { color: var(--hot); font-weight: 600; }
+
+/* Code */
+.code {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--code-bg);
+  min-width: 0;
+}
+.code-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.code-head .tag { color: var(--fg); }
+.code pre {
+  margin: 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--code-fg);
+  tab-size: 4;
+}
+.code .c { color: var(--comment); font-style: italic; }
+.code .hl { background: var(--hot-soft); color: var(--hot); font-weight: 600; }
+.code .add, .code .del, .code .ctx { display: block; padding-inline: 16px; margin-inline: -16px; }
+.code .add { background: var(--add-soft); color: var(--add); }
+.code .del { background: var(--del-soft); color: var(--del); }
+
+.notes { margin: 0; padding-left: 1.4em; display: grid; gap: 8px; }
+.notes li::marker { font-family: var(--font-mono); color: var(--accent); font-weight: 600; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+thead th {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+td:first-child { color: var(--muted); min-width: 11rem; }
+td.was { color: var(--hot); }
+td.same { color: var(--muted); }
+.num { font-variant-numeric: tabular-nums; font-weight: 600; }
+
+/* Terminal sample */
+.term {
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  margin: 0;
+  color: var(--code-fg);
+}
+.term .hot { color: var(--hot); font-weight: 600; }
+.term .dim { color: var(--comment); }
+
+/* Timeline */
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.timeline li { display: grid; grid-template-columns: 7.2rem minmax(0, 1fr); gap: 14px; }
+.timeline time { font-family: var(--font-mono); font-size: 0.82rem; color: var(--muted); padding-top: 2px; font-variant-numeric: tabular-nums; }
+@media (max-width: 520px) { .timeline li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+/* Trade-offs */
+.tradeoffs { display: grid; gap: 14px; }
+.tradeoff {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: grid;
+  gap: 8px;
+}
+.tradeoff h3 { margin: 0; }
+.tradeoff p { margin: 0; }
+.tradeoff .kind { color: var(--muted); }
+.tradeoff.flag { border-color: color-mix(in srgb, var(--hot) 45%, var(--line)); }
+.tradeoff.flag .kind { color: var(--hot); }
+
+/* Reading list */
+.reading { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.reading li { display: grid; gap: 2px; }
+.reading a { font-weight: 600; }
+.reading span { color: var(--muted); font-size: 0.95rem; }
+
+footer.colophon { font-size: 0.85rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 18px; }
+
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+
+<div class="page">
+  <header class="masthead">
+    <div class="eyebrow">{{repo}} &middot; <a href="{{pr_url}}">PR #{{n}}</a> &middot; {{area}} &middot; {{kind}}</div>
+    <h1>{{Title words}} <span class="accent-word">{{highlighted words}}</span></h1>
+    <p class="dek">{{One or two sentences: what changed and why it matters.}}</p>
+    <ul class="meta">
+      <li>{{branch}}</li>
+      <li>{{N commits}} &middot; {{short sha}}</li>
+      <li>{{N files}} &middot; +{{adds}} &minus;{{dels}}</li>
+      <li class="ok">{{status, e.g. reviewed &middot; CI green}}</li>
+    </ul>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#minute">In one minute</a></li>
+      <li><a href="#analogy">The analogy</a></li>
+      <li><a href="#before">Before the change</a></li>
+      <li><a href="#after">What the change does</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#walkthrough">Code walkthrough</a></li>
+      <li><a href="#tradeoffs">Trade-offs</a></li>
+      <li><a href="#learn">Further learning</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <section id="minute">
+      <h2>In one minute</h2>
+      <div class="summary">
+        <dl>
+          <dt>The bug</dt><dd>{{...}}</dd>
+          <dt>The cause</dt><dd>{{...}}</dd>
+          <dt>The fix</dt><dd>{{...}}</dd>
+          <dt>Proof</dt><dd>{{...}}</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section id="analogy">
+      <h2>The analogy</h2>
+      <div class="analogy">
+        <span class="label">Analogy</span>
+        <p>{{A concrete everyday scene that maps one-to-one onto the change.}}</p>
+      </div>
+    </section>
+
+    <section id="before">
+      <h2>Before the change</h2>
+      <p>{{...}}</p>
+      <figure>
+        <div class="diagram">
+<script type="text/x-mermaid">
+flowchart TD
+  A["Step one"] --> B["Step two<br>second line"]:::hot
+  B --> C["Step three"]
+  classDef hot stroke:{{hot}},stroke-width:3px
+</script>
+<div class="mermaid-out" role="img" aria-label="{{what the diagram shows}}"></div>
+        </div>
+        <figcaption>{{What to look at, and what any highlight, dashed line or short label means.}}</figcaption>
+      </figure>
+<pre class="term"><span class="dim">{{dim log line}}</span>
+<span class="hot">{{highlighted log line}}</span></pre>
+      <ol class="timeline">
+        <li><time>{{YYYY-MM-DD}}</time><div>{{commit sha, subject, what it did}}</div></li>
+      </ol>
+    </section>
+
+    <section id="after">
+      <h2>What the change does</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col"></th><th scope="col">Before</th><th scope="col">After</th></tr></thead>
+          <tbody>
+            <tr><td>{{aspect}}</td><td class="was">{{old}}</td><td>{{new}}</td></tr>
+            <tr><td>{{unchanged aspect}}</td><td class="same">{{old}}</td><td class="same">Unchanged</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="how">
+      <h2>How it works</h2>
+      <p>{{...}}</p>
+    </section>
+
+    <section id="walkthrough">
+      <h2>Code walkthrough</h2>
+      <h3>1. {{stop name}}</h3>
+      <div class="code">
+        <div class="code-head"><span class="tag">{{path/to/file}}</span><a href="{{permalink at the commit sha with #Lx-Ly}}">lines {{x}} to {{y}}</a></div>
+<pre><code><span class="c">// comment</span>
+code with a <span class="hl">highlighted call</span>
+<span class="del">-removed line</span><span class="add">+added line</span><span class="ctx"> context line</span></code></pre>
+      </div>
+      <ol class="notes">
+        <li><strong>{{label}}</strong> {{what this line does and why it matters}}</li>
+      </ol>
+    </section>
+
+    <section id="tradeoffs">
+      <h2>Trade-offs</h2>
+      <div class="tradeoffs">
+        <article class="tradeoff">
+          <span class="label kind">Cost</span>
+          <h3>{{name}}</h3>
+          <p>{{...}}</p>
+        </article>
+        <article class="tradeoff flag">
+          <span class="label kind">Noticed, not in scope</span>
+          <h3>{{name}}</h3>
+          <p>{{...}}</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="learn">
+      <h2>Further learning</h2>
+      <ul class="reading">
+        <li><a href="{{url}}">{{title}}</a><span>{{why read it}}</span></li>
+      </ul>
+    </section>
+
+    <footer class="colophon">Written on {{date}} from {{branch}} at <code>{{sha}}</code>. Line links point at that commit.</footer>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var dark = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+  var sources = Array.prototype.slice.call(document.querySelectorAll('script[type="text/x-mermaid"]'));
+  var count = 0;
+
+  function token(name) { return getComputedStyle(root).getPropertyValue(name).trim(); }
+
+  function fallback() {
+    sources.forEach(function (src) {
+      var out = src.nextElementSibling;
+      var pre = document.createElement("pre");
+      pre.className = "mermaid-fallback";
+      pre.textContent = src.textContent.trim();
+      out.replaceChildren(pre);
+    });
+  }
+
+  // Diagram colours come from the page tokens, and the size stays natural
+  // (scrolling sideways when needed), so labels never shrink to fit a column.
+  function render() {
+    if (!window.mermaid) { fallback(); return; }
+    var font = token("--font-body");
+    var t = {
+      fg: token("--fg"), muted: token("--muted"), surface: token("--surface"),
+      node: token("--node"), border: token("--node-border"), cluster: token("--cluster"),
+      line: token("--line"), hot: token("--hot"), hotSoft: token("--hot-soft"),
+      add: token("--add"), del: token("--del")
+    };
+    window.mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      theme: "base",
+      fontFamily: font,
+      themeVariables: {
+        fontFamily: font, fontSize: "16px",
+        background: t.surface, mainBkg: t.node, textColor: t.fg,
+        primaryColor: t.node, primaryTextColor: t.fg, primaryBorderColor: t.border,
+        secondaryColor: t.node, tertiaryColor: t.cluster, lineColor: t.muted,
+        clusterBkg: t.cluster, clusterBorder: t.border, titleColor: t.fg,
+        edgeLabelBackground: t.surface, nodeTextColor: t.fg,
+        actorBkg: t.node, actorBorder: t.border, actorTextColor: t.fg, actorLineColor: t.muted,
+        signalColor: t.fg, signalTextColor: t.fg,
+        labelBoxBkgColor: t.node, labelBoxBorderColor: t.border, labelTextColor: t.fg, loopTextColor: t.fg,
+        noteBkgColor: t.hotSoft, noteBorderColor: t.hot, noteTextColor: t.fg,
+        sequenceNumberColor: t.surface
+      },
+      flowchart: { useMaxWidth: false, htmlLabels: true, padding: 14, nodeSpacing: 36, rankSpacing: 44 },
+      sequence: { useMaxWidth: false, mirrorActors: false, actorFontSize: 16, messageFontSize: 16, noteFontSize: 16, boxMargin: 8, width: 110, actorMargin: 40 }
+    });
+    sources.forEach(function (src) {
+      var out = src.nextElementSibling;
+      var text = src.textContent.replace(/\{\{(\w+)\}\}/g, function (_, k) { return t[k] || t.fg; });
+      count += 1;
+      window.mermaid.render("diagram-" + count, text).then(function (r) {
+        out.innerHTML = r.svg;
+      }).catch(function () {
+        var pre = document.createElement("pre");
+        pre.className = "mermaid-fallback";
+        pre.textContent = src.textContent.trim();
+        out.replaceChildren(pre);
+      });
+    });
+  }
+
+  render();
+  if (dark && dark.addEventListener) dark.addEventListener("change", render);
+  new MutationObserver(render).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
