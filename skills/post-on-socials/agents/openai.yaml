@@ -1,0 +1,4 @@
+interface:
+  display_name: "Post on socials"
+  short_description: "Prepare project posts and media for your approval"
+  default_prompt: "Use $post-on-socials to turn the project update we just finished into posts and media previews for my social channels, then publish only the versions I approve."
