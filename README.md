@@ -18,7 +18,14 @@ To install by hand, copy a folder from `skills/` into your agent's skills direct
 
 | Skill | What it does |
 |---|---|
+| [and-then](skills/and-then) | Finishes a requested build, then invents and implements a specified number of extra features autonomously. |
 | [explain](skills/explain) | Turns a pull request, branch, commit or area of code into a single HTML explainer page: a one-minute summary, an analogy, before and after diagrams, how the mechanism works, a code walkthrough with permalinks, trade-offs and further reading. |
+
+### and-then
+
+Ask your agent something like "build me a todo list app /and-then 3". It finishes the original brief, then chooses, implements and verifies three extra features. Additions can be independent or follow a promising earlier idea.
+
+The count excludes the original brief and defaults to three when omitted. The skill follows the project's existing constraints and contribution workflow.
 
 ### explain
 
